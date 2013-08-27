@@ -15,6 +15,7 @@
  *******************************************************************************/
 package uk.co.senab.photoview;
 
+import android.R.drawable;
 import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.Matrix.ScaleToFit;
@@ -47,8 +48,8 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener, Vers
 	static final int EDGE_BOTH = 2;
 
 	public static final float DEFAULT_MAX_SCALE = 3.0f;
-	public static final float DEFAULT_MID_SCALE = 1.75f;
-	public static final float DEFAULT_MIN_SCALE = 1.0f;
+	public static final float DEFAULT_MID_SCALE = 1.5f;
+	public static final float DEFAULT_MIN_SCALE = 0.5f;
 
 	private float mMinScale = DEFAULT_MIN_SCALE;
 	private float mMidScale = DEFAULT_MID_SCALE;
@@ -510,9 +511,26 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener, Vers
 	public void rotate(final int degree) {
 		final ImageView imageView = getImageView();
 
+		final float viewWidth = imageView.getWidth();
+		final float viewHeight = imageView.getHeight();
+
 		mDegree += degree;
-		mBaseMatrix.setRotate(mDegree, imageView.getWidth() / 2, imageView.getHeight() / 2);
+		mBaseMatrix.setRotate(mDegree, viewWidth / 2,
+				viewHeight / 2);
 		checkAndDisplayMatrix();
+
+		Drawable d = imageView.getDrawable();
+
+		if (d != null) {
+			final int drawableWidth = d.getIntrinsicWidth();
+			final int drawableHeight = d.getIntrinsicHeight();
+
+			final float widthScale = viewWidth / drawableWidth;
+			final float heightScale = viewHeight / drawableHeight;
+
+			zoomTo(Math.min(widthScale, heightScale), drawableWidth / 2, drawableHeight / 2);
+		}
+
 
 //		RotateAnimation rotateAnimation = new RotateAnimation(mDegree, mDegree + degree, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
 //		rotateAnimation.setDuration(200);
