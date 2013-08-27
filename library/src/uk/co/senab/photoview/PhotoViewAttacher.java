@@ -25,6 +25,8 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnLongClickListener;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
@@ -51,6 +53,7 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener, Vers
 	private float mMinScale = DEFAULT_MIN_SCALE;
 	private float mMidScale = DEFAULT_MID_SCALE;
 	private float mMaxScale = DEFAULT_MAX_SCALE;
+	private int	mDegree = 0;
 
     private boolean mAllowParentInterceptOnEdge = true;
 
@@ -206,8 +209,6 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener, Vers
 		// If we don't have an ImageView, call cleanup()
 		if (null == imageView) {
 			cleanup();
-			throw new IllegalStateException(
-					"ImageView no longer exists. You should not use this PhotoViewAttacher any more.");
 		}
 
 		return imageView;
@@ -505,6 +506,41 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener, Vers
 		}
 	}
 
+	@Override
+	public void rotate(final int degree) {
+		final ImageView imageView = getImageView();
+
+		mDegree += degree;
+		mBaseMatrix.setRotate(mDegree, imageView.getWidth() / 2, imageView.getHeight() / 2);
+		checkAndDisplayMatrix();
+
+//		RotateAnimation rotateAnimation = new RotateAnimation(mDegree, mDegree + degree, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+//		rotateAnimation.setDuration(200);
+//		rotateAnimation.setFillAfter(false);
+//		rotateAnimation.setAnimationListener(new Animation.AnimationListener() {
+//
+//			@Override
+//			public void onAnimationStart(Animation animation) {
+//				mDegree += degree;
+//				mBaseMatrix.setRotate(mDegree, imageView.getWidth() / 2, imageView.getHeight() / 2);
+//				checkAndDisplayMatrix();
+//			}
+//
+//			@Override
+//			public void onAnimationRepeat(Animation animation) {
+//				// TODO Auto-generated method stub
+//
+//			}
+//
+//			@Override
+//			public void onAnimationEnd(Animation animation) {
+//
+//			}
+//		});
+//
+//		imageView.startAnimation(rotateAnimation);
+	}
+
 	protected Matrix getDisplayMatrix() {
 		mDrawMatrix.set(mBaseMatrix);
 		mDrawMatrix.postConcat(mSuppMatrix);
@@ -604,7 +640,7 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener, Vers
 
 	/**
 	 * Helper method that maps the supplied Matrix to the current Drawable
-	 * 
+	 *
 	 * @param matrix - Matrix to map Drawable against
 	 * @return RectF - Displayed Rectangle
 	 */
@@ -624,7 +660,7 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener, Vers
 
 	/**
 	 * Helper method that 'unpacks' a Matrix and returns the required value
-	 * 
+	 *
 	 * @param matrix - Matrix to unpack
 	 * @param whichValue - Which value from Matrix.M* to return
 	 * @return float - returned value
@@ -662,7 +698,7 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener, Vers
 
 	/**
 	 * Calculate Matrix for FIT_CENTER
-	 * 
+	 *
 	 * @param d - Drawable being displayed
 	 */
 	private void updateBaseMatrix(Drawable d) {
@@ -728,7 +764,7 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener, Vers
 	/**
 	 * Interface definition for a callback to be invoked when the internal
 	 * Matrix has changed for this View.
-	 * 
+	 *
 	 * @author Chris Banes
 	 */
 	public static interface OnMatrixChangedListener {
@@ -736,7 +772,7 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener, Vers
 		 * Callback for when the Matrix displaying the Drawable has changed.
 		 * This could be because the View's bounds have changed, or the user has
 		 * zoomed.
-		 * 
+		 *
 		 * @param rect - Rectangle displaying the Drawable's new bounds.
 		 */
 		void onMatrixChanged(RectF rect);
@@ -745,7 +781,7 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener, Vers
 	/**
 	 * Interface definition for a callback to be invoked when the Photo is
 	 * tapped with a single tap.
-	 * 
+	 *
 	 * @author Chris Banes
 	 */
 	public static interface OnPhotoTapListener {
@@ -754,7 +790,7 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener, Vers
 		 * A callback to receive where the user taps on a photo. You will only
 		 * receive a callback if the user taps on the actual photo, tapping on
 		 * 'whitespace' will be ignored.
-		 * 
+		 *
 		 * @param view - View the user tapped.
 		 * @param x - where the user tapped from the of the Drawable, as
 		 *            percentage of the Drawable width.
@@ -767,7 +803,7 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener, Vers
 	/**
 	 * Interface definition for a callback to be invoked when the ImageView is
 	 * tapped with a single tap.
-	 * 
+	 *
 	 * @author Chris Banes
 	 */
 	public static interface OnViewTapListener {
@@ -776,7 +812,7 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener, Vers
 		 * A callback to receive where the user taps on a ImageView. You will
 		 * receive a callback if the user taps anywhere on the view, tapping on
 		 * 'whitespace' will not be ignored.
-		 * 
+		 *
 		 * @param view - View the user tapped.
 		 * @param x - where the user tapped from the left of the View.
 		 * @param y - where the user tapped from the top of the View.

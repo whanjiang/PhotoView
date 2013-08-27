@@ -140,4 +140,6 @@ public interface IPhotoView {
      * @param focalY - Y Focus Point
      */
     void zoomTo(float scale, float focalX, float focalY);
+
+    void rotate(int degree);
 }

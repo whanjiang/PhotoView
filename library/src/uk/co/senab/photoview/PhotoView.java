@@ -38,7 +38,7 @@ public class PhotoView extends ImageView implements IPhotoView {
 	public PhotoView(Context context, AttributeSet attr) {
 		this(context, attr, 0);
 	}
-	
+
 	public PhotoView(Context context, AttributeSet attr, int defStyle) {
 		super(context, attr, defStyle);
 		super.setScaleType(ScaleType.MATRIX);
@@ -167,6 +167,11 @@ public class PhotoView extends ImageView implements IPhotoView {
 	@Override
 	public void zoomTo(float scale, float focalX, float focalY) {
 		mAttacher.zoomTo(scale, focalX, focalY);
+	}
+
+	@Override
+	public void rotate(final int degree) {
+		mAttacher.rotate(degree);
 	}
 
 	@Override
