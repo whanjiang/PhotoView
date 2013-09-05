@@ -48,6 +48,11 @@ public interface IPhotoView {
     float getMidScale();
 
     /**
+     * @return The current large scale level. What this value represents depends on the current {@link android.widget.ImageView.ScaleType}.
+     */
+    float getLargeScale();
+
+    /**
      * @return The current maximum scale level. What this value represents depends on the current {@link android.widget.ImageView.ScaleType}.
      */
     float getMaxScale();
@@ -78,6 +83,11 @@ public interface IPhotoView {
      * Sets the middle scale level. What this value represents depends on the current {@link android.widget.ImageView.ScaleType}.
      */
     void setMidScale(float midScale);
+
+    /**
+     * Sets the large scale level. What this value represents depends on the current {@link android.widget.ImageView.ScaleType}.
+     */
+    void setLargeScale(float largeScale);
 
     /**
      * Sets the maximum scale level. What this value represents depends on the current {@link android.widget.ImageView.ScaleType}.

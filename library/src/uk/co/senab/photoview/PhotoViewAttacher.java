@@ -47,22 +47,26 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener, Vers
 	static final int EDGE_RIGHT = 1;
 	static final int EDGE_BOTH = 2;
 
-	public static final float DEFAULT_MAX_SCALE = 3.0f;
+	public static final float DEFAULT_MAX_SCALE = 6.0f;
+	public static final float DEFAULT_LARGE_SCALE = 3.0f;
 	public static final float DEFAULT_MID_SCALE = 1.5f;
 	public static final float DEFAULT_MIN_SCALE = 0.5f;
 
 	private float mMinScale = DEFAULT_MIN_SCALE;
 	private float mMidScale = DEFAULT_MID_SCALE;
+	private float mLargeScale = DEFAULT_LARGE_SCALE;
 	private float mMaxScale = DEFAULT_MAX_SCALE;
 	private int	mDegree = 0;
 
     private boolean mAllowParentInterceptOnEdge = true;
 
-	private static void checkZoomLevels(float minZoom, float midZoom, float maxZoom) {
+	private static void checkZoomLevels(float minZoom, float midZoom, float largeZoom, float maxZoom) {
 		if (minZoom >= midZoom) {
 			throw new IllegalArgumentException("MinZoom should be less than MidZoom");
-		} else if (midZoom >= maxZoom) {
-			throw new IllegalArgumentException("MidZoom should be less than MaxZoom");
+		} else if (midZoom >= largeZoom) {
+			throw new IllegalArgumentException("MidZoom should be less than LargeZoom");
+		} else if (largeZoom >= maxZoom) {
+			throw new IllegalArgumentException("LargeZoom should be less than MaxZoom");
 		}
 	}
 
@@ -231,6 +235,12 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener, Vers
 	}
 
 	@Override
+	public float getLargeScale() {
+		// TODO Auto-generated method stub
+		return mLargeScale;
+	}
+
+	@Override
 	public final float getScale() {
 		return getValue(mSuppMatrix, Matrix.MSCALE_X);
 	}
@@ -248,7 +258,9 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener, Vers
 
 			if (scale < mMidScale) {
 				zoomTo(mMidScale, x, y);
-			} else if (scale >= mMidScale && scale < mMaxScale) {
+			} else if (scale >= mMidScale && scale < mLargeScale) {
+				zoomTo(mLargeScale, x, y);
+			} else if (scale >= mLargeScale && scale < mMaxScale) {
 				zoomTo(mMaxScale, x, y);
 			} else {
 				zoomTo(mMinScale, x, y);
@@ -429,19 +441,25 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener, Vers
 
 	@Override
 	public void setMinScale(float minScale) {
-		checkZoomLevels(minScale, mMidScale, mMaxScale);
+		checkZoomLevels(minScale, mMidScale, mLargeScale, mMaxScale);
 		mMinScale = minScale;
 	}
 
 	@Override
 	public void setMidScale(float midScale) {
-		checkZoomLevels(mMinScale, midScale, mMaxScale);
+		checkZoomLevels(mMinScale, midScale, mLargeScale, mMaxScale);
 		mMidScale = midScale;
 	}
 
 	@Override
+	public void setLargeScale(float largeScale) {
+		checkZoomLevels(mMinScale, mMidScale, largeScale, mMaxScale);
+		mLargeScale = largeScale;
+	}
+
+	@Override
 	public void setMaxScale(float maxScale) {
-		checkZoomLevels(mMinScale, mMidScale, maxScale);
+		checkZoomLevels(mMinScale, mMidScale, mLargeScale, maxScale);
 		mMaxScale = maxScale;
 	}
 

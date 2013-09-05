@@ -76,6 +76,11 @@ public class PhotoView extends ImageView implements IPhotoView {
 	}
 
 	@Override
+	public float getLargeScale() {
+		return mAttacher.getLargeScale();
+	}
+
+	@Override
 	public float getScale() {
 		return mAttacher.getScale();
 	}
@@ -103,6 +108,11 @@ public class PhotoView extends ImageView implements IPhotoView {
 	@Override
 	public void setMaxScale(float maxScale) {
 		mAttacher.setMaxScale(maxScale);
+	}
+
+	@Override
+	public void setLargeScale(float largeScale) {
+		mAttacher.setLargeScale(largeScale);
 	}
 
 	@Override
@@ -179,5 +189,4 @@ public class PhotoView extends ImageView implements IPhotoView {
 		mAttacher.cleanup();
 		super.onDetachedFromWindow();
 	}
-
 }
